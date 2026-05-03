@@ -2,31 +2,34 @@ const si = require('systeminformation');
 const EventEmitter = require('events');
 
 class ProcessPoller extends EventEmitter {
-    constructor(interval = 5000) {
+    constructor(intervalMs = 5000) {
         super();
-        this.interval = interval;
-        this.timer = null;
+        this.intervalMs = intervalMs;
+        this.pollingTimer = null;
+        this.isRunning = false;
         this.lastActiveProcess = null;
         this.lastActiveTime = Date.now();
     }
 
     start() {
-        if (this.timer) return;
-        this.timer = setInterval(() => this.poll(), this.interval);
-        console.log(`[ProcessPoller] Monitoring started with ${this.interval}ms interval.`);
+        if (this.isRunning) return;
+        this.isRunning = true;
+        this.poll(); // Initial poll
+        this.pollingTimer = setInterval(() => this.poll(), this.intervalMs);
+        console.log(`[ProcessPoller] Started polling every ${this.intervalMs}ms`);
     }
 
     stop() {
-        if (this.timer) {
-            clearInterval(this.timer);
-            this.timer = null;
-            console.log('[ProcessPoller] Monitoring stopped.');
-        }
+        if (!this.isRunning) return;
+        clearInterval(this.pollingTimer);
+        this.isRunning = false;
+        this.pollingTimer = null;
+        console.log('[ProcessPoller] Stopped polling');
     }
 
     async poll() {
         try {
-            // Fetch process list
+            // Get current processes
             const processData = await si.processes();
             
             // To approximate "active" process from systeminformation, 
