@@ -43,8 +43,8 @@ Curzy Vitality is a modular system designed for developers and power users who w
 ### Setup
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/curzyori/curzy-vitality-3.git
-   cd curzy-vitality-3
+   git clone https://github.com/curzyori/Curzy-Vitality-3.git
+   cd Curzy-Vitality-3
    ```
 
 2. **Install dependencies:**
